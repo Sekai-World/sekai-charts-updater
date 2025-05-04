@@ -11,7 +11,7 @@ import aiohttp
 import orjson as json
 from anyio import Path, open_file
 
-logger = logging.getLogger("live2d")
+logger = logging.getLogger("charts")
 
 
 class LocalQueueHandler(QueueHandler):

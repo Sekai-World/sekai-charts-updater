@@ -6,7 +6,7 @@ import aiohttp
 import sekaiworld.scores as scores
 from playwright.async_api import async_playwright
 
-logger = logging.getLogger("live2d")
+logger = logging.getLogger("charts")
 
 
 async def svg_to_png(svg_path: str, png_path: str):

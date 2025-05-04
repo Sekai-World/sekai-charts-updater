@@ -15,7 +15,7 @@ from constants import UNITY_FS_CONTAINER_BASE
 from helpers import deobfuscate
 from utils.chart import get_list, get_json_url, render_chart
 
-logger = logging.getLogger("live2d")
+logger = logging.getLogger("charts")
 
 
 async def download_deobfuscate_bundle(

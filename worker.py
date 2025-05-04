@@ -7,7 +7,7 @@ from anyio import Path
 from bundle import download_deobfuscate_bundle, extract_asset_bundle
 from helpers import refresh_cookie
 
-logger = logging.getLogger("live2d")
+logger = logging.getLogger("charts")
 
 
 async def worker(

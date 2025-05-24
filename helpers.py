@@ -66,6 +66,7 @@ async def get_download_list(
     asset_bundle_info: Dict,
     game_version_json: Dict,
     config=None,
+    assetver: str = None,
     assetbundle_host_hash: str = None,
     include_list: List[str] = None,
     exclude_list: List[str] = None,
@@ -95,40 +96,72 @@ async def get_download_list(
 
     download_list = None
     if cached_asset_bundle_info and cached_game_version_json:
-        # Colorful Palette servers
-        cached_bundles: Dict = cached_asset_bundle_info.get("bundles")
-        current_bundles: Dict = asset_bundle_info.get("bundles")
+        if assetver:
+            cached_assetver = cached_game_version_json.get("assetver", None)
+            if cached_assetver != assetver:
+                game_version_json["assetver"] = assetver
 
-        # compare hash of each bundle, if not equal, it should be included in the download list
-        # it also includes the new bundles
-        changed_bundles = [
-            bundle
-            for bundle in current_bundles.values()
-            if bundle.get("hash")
-            != cached_bundles.get(bundle.get("bundleName"), {}).get("hash")
-        ]
+                cached_bundles: Dict = cached_asset_bundle_info.get("bundles")
+                current_bundles: Dict = asset_bundle_info.get("bundles")
 
-        # Generate the download list from changed bundles
-        version = asset_bundle_info.get("version")
-        asset_hash: str = game_version_json.get("assetHash")
-        download_list = [
-            (
-                config.ASSET_BUNDLE_URL.format(
-                    assetbundleHostHash=assetbundle_host_hash,
-                    version=version,
-                    assetHash=asset_hash,
-                    bundleName=bundle.get("bundleName"),
-                ),
-                bundle,
-            )
-            for bundle in changed_bundles
-            if bundle.get("bundleName").startswith("music/music_score/")
-        ]
+                changed_bundles = [
+                    bundle
+                    for bundle in current_bundles.values()
+                    if bundle.get("hash")
+                    != cached_bundles.get(bundle.get("bundleName"), {}).get("hash")
+                ]
+
+                # Generate the download list from changed bundles
+                app_version: str = config.APP_VERSION_OVERRIDE or game_version_json.get("appVersion")
+                download_list = [
+                    (
+                        config.ASSET_BUNDLE_URL.format(
+                            appVersion=app_version,
+                            bundleName=bundle.get("bundleName"),
+                            downloadPath=bundle.get("downloadPath"),
+                        ),
+                        bundle,
+                    )
+                    for bundle in changed_bundles
+                ]
+        else:
+            # Colorful Palette servers
+            cached_bundles: Dict = cached_asset_bundle_info.get("bundles")
+            current_bundles: Dict = asset_bundle_info.get("bundles")
+
+            # compare hash of each bundle, if not equal, it should be included in the download list
+            # it also includes the new bundles
+            changed_bundles = [
+                bundle
+                for bundle in current_bundles.values()
+                if bundle.get("hash")
+                != cached_bundles.get(bundle.get("bundleName"), {}).get("hash")
+            ]
+
+            # Generate the download list from changed bundles
+            version = asset_bundle_info.get("version")
+            asset_hash: str = game_version_json.get("assetHash")
+            download_list = [
+                (
+                    config.ASSET_BUNDLE_URL.format(
+                        assetbundleHostHash=assetbundle_host_hash,
+                        version=version,
+                        assetHash=asset_hash,
+                        bundleName=bundle.get("bundleName"),
+                    ),
+                    bundle,
+                )
+                for bundle in changed_bundles
+            ]
 
     else:
+        if assetver:
+            game_version_json["assetver"] = assetver
+
         # Get the download list for a full download
         version = asset_bundle_info.get("version")
         asset_hash: str = game_version_json.get("assetHash")
+        app_version: str = config.APP_VERSION_OVERRIDE or game_version_json.get("appVersion")
         bundles: Dict = asset_bundle_info.get("bundles")
 
         download_list = [
@@ -137,12 +170,13 @@ async def get_download_list(
                     assetbundleHostHash=assetbundle_host_hash,
                     version=version,
                     assetHash=asset_hash,
+                    appVersion=app_version,
                     bundleName=bundle.get("bundleName"),
+                    downloadPath=bundle.get("downloadPath"),
                 ),
                 bundle,
             )
             for bundle in bundles.values()
-            if bundle.get("bundleName").startswith("music/music_score/")
         ]
         
     logger.debug("Download list length: %s", len(download_list))

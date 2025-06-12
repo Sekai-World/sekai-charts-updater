@@ -112,7 +112,7 @@ async def get_download_list(
                 ]
 
                 # Generate the download list from changed bundles
-                app_version: str = config.APP_VERSION_OVERRIDE or game_version_json.get("appVersion")
+                app_version: str = getattr(config, "APP_VERSION_OVERRIDE", None) or game_version_json.get("appVersion") or ""
                 download_list = [
                     (
                         config.ASSET_BUNDLE_URL.format(
@@ -161,7 +161,7 @@ async def get_download_list(
         # Get the download list for a full download
         version = asset_bundle_info.get("version")
         asset_hash: str = game_version_json.get("assetHash")
-        app_version: str = config.APP_VERSION_OVERRIDE or game_version_json.get("appVersion")
+        app_version: str = getattr(config, "APP_VERSION_OVERRIDE", None) or game_version_json.get("appVersion") or ""
         bundles: Dict = asset_bundle_info.get("bundles")
 
         download_list = [

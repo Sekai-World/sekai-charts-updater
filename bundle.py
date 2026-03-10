@@ -144,7 +144,7 @@ async def extract_asset_bundle(
         # Post processing for score files
         if score_files:
             # Download musio info json from remote
-            music_info_url = get_json_url(config.REGION.name.lower(), "musics")
+            music_info_url = get_json_url(config.REGION.value.lower(), "musics")
             music_info = await get_list(music_info_url)
 
             for score_file in score_files:

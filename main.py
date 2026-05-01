@@ -9,61 +9,32 @@ from anyio import Path, open_file
 from constants import NUVERSE_REGIONS
 from crypto import unpack
 from helpers import (
+    build_download_disk_space_gate,
     ensure_dir_exists,
     get_download_list,
     refresh_cookie,
     setup_logging_queue,
 )
-from worker import worker
+from worker import run_pipeline
 
 logger = logging.getLogger("charts")
 
 
 async def do_download(dl_list: List[Tuple], config, headers, cookie):
-    """
-    Download the files in the download list using asyncio and aiohttp.
-    The download list is a list of tuples containing the url and the bundle name.
-    The function will use a queue to manage the download tasks.
-    """
-    logger.info("Starting download...")
-    # Create a queue to manage tasks
-    queue = asyncio.Queue()
-
-    # Populate the queue with download tasks
-    for url, bundle in dl_list:
-        await queue.put((url, bundle))
-
-    # List to track failed tasks
-    failed_tasks = []
-
-    async def worker_task(worker_id):
-        nonlocal failed_tasks
-        while not queue.empty():
-            url, bundle = await queue.get()
-            try:
-                await worker(
-                    f"download_worker-{worker_id}",
-                    (url, bundle),
-                    config,
-                    headers,
-                    cookie=cookie,
-                )
-            except Exception as e:
-                # Log the error and add the task to failed_tasks
-                logger.exception("Failed to download %s: %s", url, e)
-                failed_tasks.append((url, bundle))
-            finally:
-                queue.task_done()
-
-    # Create and run worker tasks
-    workers = [
-        asyncio.create_task(worker_task(worker_id))
-        for worker_id in range(config.MAX_CONCURRENCY)
-    ]
-    await queue.join()
-
-    # Wait for all workers to finish
-    await asyncio.gather(*workers, return_exceptions=True)
+    logger.info("RUN | step=4/4 | action=pipeline_start | items=%d", len(dl_list))
+    download_disk_space_gate = build_download_disk_space_gate(config)
+    try:
+        failed_tasks = await run_pipeline(
+            dl_list, config, headers, cookie=cookie,
+            download_disk_space_gate=download_disk_space_gate,
+        )
+    except Exception:
+        logger.exception("ERROR | stage=pipeline | action=crash | items=%d", len(dl_list))
+        failed_tasks = dl_list
+    if failed_tasks:
+        async with await open_file(config.DL_LIST_CACHE_PATH, "wb") as f:
+            await f.write(json.dumps(failed_tasks, option=json.OPT_INDENT_2))
+        logger.warning("RUN | result=partial_failure | failed=%d", len(failed_tasks))
 
     if config.ASSET_REMOTE_STORAGE:
         logger.info("Uploading music charts...")

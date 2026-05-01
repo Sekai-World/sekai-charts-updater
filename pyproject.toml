@@ -1,0 +1,17 @@
+[project]
+name = "sekai-charts-updater"
+version = "0.1.0"
+description = "Sekai Music Charts Updater"
+readme = "README.md"
+requires-python = "==3.12.*"
+dependencies = [
+    "aiohttp==3.11.18",
+    "anyio==4.9.0",
+    "orjson==3.10.18",
+    "pillow==11.2.1",
+    "playwright==1.52.0",
+    "pycryptodome==3.22.0",
+    "sekaiworld.scores==0.1.10",
+    "u-msgpack-python==2.8.0",
+    "unitypy==1.22.5",
+]

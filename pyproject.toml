@@ -11,7 +11,7 @@ dependencies = [
     "pillow==11.2.1",
     "playwright==1.52.0",
     "pycryptodome==3.22.0",
-    "sekaiworld.scores==0.1.10",
+    "sekaiworld.scores==0.1.11",
     "u-msgpack-python==2.8.0",
     "unitypy==1.22.5",
 ]

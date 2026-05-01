@@ -412,21 +412,21 @@ requires-dist = [
     { name = "pillow", specifier = "==11.2.1" },
     { name = "playwright", specifier = "==1.52.0" },
     { name = "pycryptodome", specifier = "==3.22.0" },
-    { name = "sekaiworld-scores", specifier = "==0.1.10" },
+    { name = "sekaiworld-scores", specifier = "==0.1.11" },
     { name = "u-msgpack-python", specifier = "==2.8.0" },
     { name = "unitypy", specifier = "==1.22.5" },
 ]
 
 [[package]]
 name = "sekaiworld-scores"
-version = "0.1.10"
+version = "0.1.11"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "svgwrite" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/70/fd/ecee814e517bf4ce3417a470ffc9c88d813c1a8cf4840059b3cb137b1a82/sekaiworld_scores-0.1.10.tar.gz", hash = "sha256:f8ca2b1c6acecc23264962d7ea9443cc45fe06812e571d0029fe5a3f488c55bd", size = 18045, upload-time = "2024-10-13T13:43:20.939Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8f/c7/787ff5958976090be321bc0ba85cc3a4d57d6170f027482f1e72e44c93da/sekaiworld_scores-0.1.11.tar.gz", hash = "sha256:f4b9043bcde31c6b57ead3b59f2262ed9d98db21f9f1c0cb142e0e499f66cd0a", size = 18164, upload-time = "2026-05-01T11:20:43.744Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/de/f2/488b37c3276cdacc923bae2196aa9819631c5dfe6385d39d1172e851c54c/sekaiworld.scores-0.1.10-py3-none-any.whl", hash = "sha256:cccf58e51ea2e56a4529744133828e200e5e401a6aa13e5866e996d4d30553ce", size = 20569, upload-time = "2024-10-13T13:43:19.349Z" },
+    { url = "https://files.pythonhosted.org/packages/5d/24/b90b3c354e5a9ed2efc9783f0e4f10cb7cdefec566e3c350b3ae57ca49b2/sekaiworld_scores-0.1.11-py3-none-any.whl", hash = "sha256:49e67fc29c32ec2aeed45ee6170f6dc526361134bb720634647c18221b611709", size = 20660, upload-time = "2026-05-01T11:20:42.254Z" },
 ]
 
 [[package]]
